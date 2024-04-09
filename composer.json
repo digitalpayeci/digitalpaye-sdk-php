@@ -17,6 +17,6 @@
             "name": "Digitalpaye Inc."
         }
     ],
-    "minimum-stability": "alpha",
-    "version": "1.0.0-alpha"
+    "minimum-stability": "stable",
+    "version": "1.0.0"
 }
