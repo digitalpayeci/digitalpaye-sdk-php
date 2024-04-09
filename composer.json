@@ -1,0 +1,21 @@
+{
+    "name": "digitalpaye/digitalpaye-sdk-php",
+    "description": "SDK Laravel pour interagir avec l'API Digitalpaye\u001b",
+    "type": "library",
+    "require": {
+        "php": "^7.3",
+        "guzzlehttp/guzzle": "7.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Digitalpaye\\DigitalpayeSdkPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Digitalpaye Inc."
+        }
+    ],
+    "minimum-stability": "alpha"
+}
