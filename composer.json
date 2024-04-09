@@ -1,6 +1,6 @@
 {
     "name": "digitalpaye/digitalpaye-sdk-php",
-    "description": "SDK Laravel pour interagir avec l'API Digitalpaye\u001b",
+    "description": "SDK Laravel pour interagir avec l'API Digitalpaye",
     "type": "library",
     "require": {
         "php": "^7.3",
