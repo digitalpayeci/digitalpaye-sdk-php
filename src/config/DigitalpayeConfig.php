@@ -1,7 +1,7 @@
 <?php
 
 namespace DigitalpayeSdkPhp\Config;
-use DigitalpayeSdkPhp\Config\Constants;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
@@ -29,13 +29,14 @@ class DigitalpayeConfig
     {
         try {
             $response = $this->httpClient->post('auth');
-            $data = json_decode($response->getBody(), true);
-            return $data['token'] ?? null;
+            $data = json_decode($response->getBody()->getContents(), true);
+            $token = $data['token'] ?? null;
+            return $token;
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
-                $statusCode = $e->getResponse()->getStatusCode();
                 $errorMessage = $e->getResponse()->getBody()->getContents();
-                throw new \Exception("HTTP Error {$statusCode}: {$errorMessage}");
+                $errorData = json_decode($errorMessage, true);
+                return json_encode($errorData);
             } else {
                 throw new \Exception("Request Exception: " . $e->getMessage());
             }

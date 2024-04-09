@@ -24,23 +24,27 @@ class ApiRepository
             ]
         ]);
     }
-
-    public function getToken(): string
-    {
-        $authorizationHeader = $this->httpClient->getConfig('headers')['Authorization'] ?? '';
-        $token = str_replace('Bearer ', '', $authorizationHeader);
-        return $token;
-    }
     public function postRequest(string $endpoint, array $payload): array
     {
         try {
             $response = $this->httpClient->post($endpoint, [
                 'json' => $payload
             ]);
-
-            return json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            $responseData = json_decode($response->getBody()->getContents(), true);
+            if ($statusCode >= 200 && $statusCode < 300) {
+                return $responseData;
+            } else {
+                return $responseData;
+            }
         } catch (RequestException $e) {
-            $this->handleRequestException($e);
+            if ($e->hasResponse()) {
+                $errorMessage = $e->getResponse()->getBody()->getContents();
+                $errorData = json_decode($errorMessage, true);
+                return $errorData;
+            } else {
+                throw new \Exception("Request Exception: " . $e->getMessage());
+            }
         }
     }
 
@@ -48,10 +52,21 @@ class ApiRepository
     {
         try {
             $response = $this->httpClient->get($endpoint);
-
-            return json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            $responseData = json_decode($response->getBody()->getContents(), true);
+            if ($statusCode >= 200 && $statusCode < 300) {
+                return $responseData;
+            } else {
+                return $responseData;
+            }
         } catch (RequestException $e) {
-            $this->handleRequestException($e);
+            if ($e->hasResponse()) {
+                $errorMessage = $e->getResponse()->getBody()->getContents();
+                $errorData = json_decode($errorMessage, true);
+                return $errorData;
+            } else {
+                throw new \Exception("Request Exception: " . $e->getMessage());
+            }
         }
     }
 

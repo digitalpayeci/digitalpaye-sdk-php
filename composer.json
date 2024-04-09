@@ -7,16 +7,21 @@
         "guzzlehttp/guzzle": "^7.0.1"
     },
     "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Digitalpaye\\DigitalpayeSdkPhp\\": "src/"
-        }
-    },
     "authors": [
         {
             "name": "Digitalpaye Inc."
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "DigitalpayeSdkPhp\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
     "minimum-stability": "stable",
     "version": "1.0.0"
 }

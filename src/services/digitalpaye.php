@@ -14,12 +14,6 @@ class Digitalpaye
         $config = new DigitalpayeConfig($apiKey, $apiSecret);
         $this->apiRepository = new ApiRepository($config);
     }
-
-    public function getToken(): string
-    {
-        return $this->apiRepository->getToken();
-    }
-
     public function createCollecteMTN(array $payload): array
     {
         $this->validatePayload($payload, ['code_country', 'operator', 'currency', 'customer_id', 'amount', 'name_user', 'transaction_id']);
@@ -28,7 +22,7 @@ class Digitalpaye
 
     public function createCollecteWave(array $payload): array
     {
-        $this->validatePayload($payload, ['code_country', 'operator', 'currency', 'customer_id', 'amount', 'name_user', 'transaction_id', 'url_success', 'url_error', 'url_cancel']);
+        $this->validatePayload($payload, ['code_country', 'operator', 'currency', 'customer_id', 'amount', 'name_user', 'transaction_id', 'url_success', 'url_error', 'url_return']);
         return $this->apiRepository->postRequest('collecte/mobile-money', $payload);
     }
 
