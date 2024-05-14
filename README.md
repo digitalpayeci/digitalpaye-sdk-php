@@ -29,7 +29,41 @@ $apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
 $config = new Digitalpaye($apikey, $apisecret);
 //Get balance
 $balance = $config->getBalance();
-echo($balance["balance"]);
+echo($balance["data"]["balance"]);
+?>
+```
+
+
+### Créer une transaction Orange Money
+
+```code
+  <?php
+require_once __DIR__ . '/../vendor/autoload.php';
+use DigitalpayeSdkPhp\Services\Digitalpaye;
+
+$apikey = "live_digitalpaye129923061";
+$apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
+
+$config = new Digitalpaye($apikey, $apisecret);
+//Create Collecte Orange Money
+$dataCreateCollecteOrangeMoney = array(
+    "code_country" => "CI",
+    "operator"=> "ORANGE_MONEY_CI",
+    "currency"=> "XOF",
+    "customer_id"=> "0777101308",
+    "code_otp" => "5923",
+    "amount"=> 310,
+    "name_user"=> "GUEI HELIE",
+    "transaction_id"=> "10180120"
+);
+$collecteOrangeMoney = $config->createPayment($dataCreateCollecteOrangeMoney);
+if($collecteOrangeMoney["status"]=="PENDING"){
+    echo("La transaction est en cours de confirmation");
+}else if($collecteOrangeMoney["status"]=="SUCCESSFULL"){
+ echo("La transaction a été traitée avec succès.");
+}else{
+    echo($collecteOrangeMoney["message"]);
+}
 ?>
 ```
 
@@ -51,15 +85,14 @@ $dataCreateCollecteWave = array(
     "currency"=> "XOF",
     "url_success" => "https://digitalpaye.com",
     "url_error" => "https://digitalpaye.com",
-    "url_return"=>  "https://digitalpaye.com",
     "customer_id"=> "0777101308",
     "amount"=> 310,
     "name_user"=> "GUEI HELIE",
     "transaction_id"=> "10180120"
 );
-$collecteWave = $config->createCollecteWave($dataCreateCollecteWave);
+$collecteWave = $config->createPayment($dataCreateCollecteWave);
 if($collecteWave["status"]=="PENDING"){
-    header($collecteWave["url_payment"]);
+    header($collecteWave["data"]["wave_launch_url"]);
 }else{
     echo($collecteWave["message"]);
 }
@@ -89,13 +122,49 @@ $dataCreateCollecteMTN= array(
     "name_user"=> "GUEI HELIE",
     "transaction_id"=> "10180120"
 );
-$collecteMTN = $config->createCollecteMTN($dataCreateCollecteMTN);
+$collecteMTN = $config->createPayment($dataCreateCollecteMTN);
 if($collecteMTN["status"]=="PENDING"){
     echo("La transaction est en cours de confirmation");
 }else if($collecteMTN["status"]=="FAILED"){
     echo("La transaction a échouée");
 }else{
     echo($collecteMTN["message"]);
+}
+?>
+```
+
+
+### Créer une transaction Carte
+
+```code
+  <?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+use DigitalpayeSdkPhp\Services\Digitalpaye;
+
+$apikey = "live_digitalpaye129923061";
+$apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
+
+$config = new Digitalpaye($apikey, $apisecret);
+
+//Create Collecte Card
+$dataCreateCollecteCard= array(
+    "code_country" => "CI",
+    "currency"=> "XOF",
+    "customer_id"=> "0546573332",
+    "amount"=> 310,
+    "email_user" => "elieguei225@gmial.com",
+    "name_user"=> "GUEI HELIE",
+    "transaction_id"=> "10180120",
+    "redirect_url" => "https://digitalpaye.com"
+);
+$collecteCard = $config->createCollecteCard($dataCreateCollecteCard);
+if($collecteCard["status"]=="PENDING"){
+    header($collecteWave["data"]["urlPayment"]);
+}else if($collecteCard["status"]=="FAILED"){
+    echo("La transaction a échouée");
+}else{
+    echo($collecteCard["message"]);
 }
 ?>
 ```
