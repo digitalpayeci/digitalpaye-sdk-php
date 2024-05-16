@@ -92,7 +92,7 @@ $dataCreateCollecteWave = array(
 );
 $collecteWave = $config->createPayment($dataCreateCollecteWave);
 if($collecteWave["status"]=="PENDING"){
-    header($collecteWave["data"]["wave_launch_url"]);
+   header("Location: " . $collecteWave["data"]["wave_launch_url"]);
 }else{
     echo($collecteWave["message"]);
 }
@@ -160,7 +160,7 @@ $dataCreateCollecteCard= array(
 );
 $collecteCard = $config->createCollecteCard($dataCreateCollecteCard);
 if($collecteCard["status"]=="PENDING"){
-    header($collecteWave["data"]["urlPayment"]);
+    header("Location: " . $collecteCard["data"]["urlPayment"]);
 }else if($collecteCard["status"]=="FAILED"){
     echo("La transaction a échouée");
 }else{
