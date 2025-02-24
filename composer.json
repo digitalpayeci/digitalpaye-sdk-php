@@ -1,27 +1,27 @@
 {
-    "name": "digitalpaye/digitalpaye-sdk-php",
-    "description": "SDK Laravel pour interagir avec l'API Digitalpaye",
-    "type": "library",
-    "require": {
-        "php": "^7.3|^8.0",
-        "guzzlehttp/guzzle": "^7.0.1"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Digitalpaye Inc."
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "DigitalpayeSdkPhp\\": "src/"
-        }
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
-    "minimum-stability": "stable",
-    "version": "1.0.1"
+  "name": "digitalpaye/digitalpaye-sdk-php",
+  "description": "SDK Laravel pour interagir avec l'API Digitalpaye",
+  "type": "library",
+  "require": {
+    "php": "^7.3|^8.0",
+    "guzzlehttp/guzzle": "^7.0.1"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Digitalpaye Inc."
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "DigitalpayeSdkPhp\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "version": "1.1.0"
 }

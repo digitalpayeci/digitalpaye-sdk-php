@@ -30,7 +30,7 @@ class DigitalpayeConfig
         try {
             $response = $this->httpClient->post('auth');
             $data = json_decode($response->getBody()->getContents(), true);
-            $token = $data['token'] ?? null;
+            $token = $data['data']['token'] ?? null;
             return $token;
         } catch (RequestException $e) {
             if ($e->hasResponse()) {

@@ -14,30 +14,39 @@ class Digitalpaye
         $config = new DigitalpayeConfig($apiKey, $apiSecret);
         $this->apiRepository = new ApiRepository($config);
     }
-    public function createPayment(array $payload): array
+   public function createPayment(array $payload): array
     {
-        $requiredKeys = ['code_country', 'operator', 'currency', 'customer_id', 'amount', 'name_user', 'transaction_id'];
-        $this->validatePayload($payload, $requiredKeys);
+        $requiredKeys = [
+            'transactionId', 
+            'customer', 
+            'amount', 
+            'currency', 
+            'operator', 
+            'payer'
+        ];
+
         // Vérifier les champs supplémentaires en fonction de l'opérateur
         switch ($payload['operator']) {
             case 'ORANGE_MONEY_CI':
-                $additionalKeys = ['code_otp'];
+                $additionalKeys = ['otpCode'];
                 break;
             case 'WAVE_CI':
-                $additionalKeys = ['url_success', 'url_error'];
+                $additionalKeys = ['urlSuccess', 'urlError']; // Ces champs existent-ils vraiment ?
                 break;
             case 'MTN_MONEY_CI':
-                // Aucun champ supplémentaire requis pour MTN Money CI
                 $additionalKeys = [];
                 break;
             default:
                 throw new \InvalidArgumentException('Invalid operator: ' . $payload['operator']);
         }
+
         $allRequiredKeys = array_merge($requiredKeys, $additionalKeys);
         $this->validatePayload($payload, $allRequiredKeys);
+
         // Envoyer la demande de paiement à l'API
         return $this->apiRepository->postRequest('collecte/mobile-money', $payload);
     }
+
     public function createCollecteCard(array $payload): array
     {
         $this->validatePayload($payload, ['code_country', 'currency', 'customer_id', 'amount', 'name_user',  'email_user', 'transaction_id', 'redirect_url']);
@@ -48,9 +57,17 @@ class Digitalpaye
         return $this->apiRepository->getRequest('balance');
     }
 
-    public function createTransfer(array $payload): array
+  public function createTransfer(array $payload): array
     {
-        $this->validatePayload($payload, ['code_country', 'currency', 'customer_id', 'name', 'amount', 'operator', 'transaction_id']);
+        $this->validatePayload($payload, [
+            'transactionId', 
+            'customer', 
+            'amount', 
+            'currency', 
+            'operator', 
+            'recipient'
+        ]);
+
         return $this->apiRepository->postRequest('transfers/mobile-money', $payload);
     }
 

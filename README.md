@@ -1,43 +1,45 @@
 # Digitalpaye SDK PHP
 
-
 ## Description
 
-Le Digitalpaye SDK PHP est un SDK Laravel qui permet aux développeurs d'interagir avec l'API Digitalpaye de manière transparente depuis des applications PHP. Ce SDK simplifie le processus d'intégration et fournit des méthodes pour effectuer diverses opérations telles que la vérification des soldes, la création de demandes de collecte et l'initiation de transferts.
+Le **Digitalpaye SDK PHP** est un SDK Laravel qui permet aux développeurs d'interagir avec l'API Digitalpaye de manière transparente depuis des applications PHP. Ce SDK simplifie le processus d'intégration et fournit des méthodes pour effectuer diverses opérations telles que :
+
+- La vérification des soldes
+- La création de demandes de collecte
+- L'initiation de transferts
 
 ## Installation
 
-Vous pouvez installer le Digitalpaye SDK PHP via Composer en exécutant la commande suivante :
+Vous pouvez installer le **Digitalpaye SDK PHP** via Composer en exécutant la commande suivante :
 
 ```bash
-  composer require digitalpaye/digitalpaye-sdk-php
+composer require digitalpaye/digitalpaye-sdk-php
 ```
 
-Alternativement, vous pouvez télécharger le SDK directement depuis GitHub : Digitalpaye SDK PHP.
+Alternativement, vous pouvez télécharger le SDK directement depuis GitHub : **[Digitalpaye SDK PHP](https://github.com/digitalpaye/digitalpaye-sdk-php)**.
 
 ## Démarrage
 
-### Get balance
+### Obtenir le solde
 
-```code
-  <?php
+```php
+<?php
 require_once __DIR__ . '/../vendor/autoload.php';
 use DigitalpayeSdkPhp\Services\Digitalpaye;
 
 $apikey = "live_digitalpaye129923061";
 $apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
+
 $config = new Digitalpaye($apikey, $apisecret);
-//Get balance
 $balance = $config->getBalance();
-echo($balance["data"]["balance"]);
+echo $balance["data"]["amount"];
 ?>
 ```
 
-
 ### Créer une transaction Orange Money
 
-```code
-  <?php
+```php
+<?php
 require_once __DIR__ . '/../vendor/autoload.php';
 use DigitalpayeSdkPhp\Services\Digitalpaye;
 
@@ -45,32 +47,43 @@ $apikey = "live_digitalpaye129923061";
 $apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
 
 $config = new Digitalpaye($apikey, $apisecret);
-//Create Collecte Orange Money
-$dataCreateCollecteOrangeMoney = array(
-    "code_country" => "CI",
-    "operator"=> "ORANGE_MONEY_CI",
-    "currency"=> "XOF",
-    "customer_id"=> "0777101308",
-    "code_otp" => "5923",
-    "amount"=> 310,
-    "name_user"=> "GUEI HELIE",
-    "transaction_id"=> "10180120"
-);
+
+$dataCreateCollecteOrangeMoney = [
+    "transactionId" => "DIGITAL-303311901120870",
+    "customer" => [
+        "lastName" => "GUEI",
+        "firstName" => "HELIE",
+        "phone" => "0777101308",
+        "email" => "elieguei225@gmail.com",
+        "address" => [
+            "countryCode" => "CI",
+            "city" => "Abidjan",
+            "streetAddress" => "Plateau Cocody"
+        ]
+    ],
+    "payer" => "0777101308",
+    "otpCode" => "4008",
+    "amount" => "2000",
+    "currency" => "XOF",
+    "operator" => "ORANGE_MONEY_CI"
+];
+
 $collecteOrangeMoney = $config->createPayment($dataCreateCollecteOrangeMoney);
-if($collecteOrangeMoney["status"]=="PENDING"){
-    echo("La transaction est en cours de confirmation");
-}else if($collecteOrangeMoney["status"]=="SUCCESSFULL"){
- echo("La transaction a été traitée avec succès.");
-}else{
-    echo($collecteOrangeMoney["message"]);
+
+if ($collecteOrangeMoney['data']["status"] == "PENDING") {
+    echo "La transaction est en cours de confirmation";
+} elseif ($collecteOrangeMoney['data']["status"] == "SUCCESSFUL") {
+    echo "La transaction a été traitée avec succès.";
+} else {
+    echo $collecteOrangeMoney["message"];
 }
 ?>
 ```
 
 ### Créer une transaction Wave
 
-```code
-  <?php
+```php
+<?php
 require_once __DIR__ . '/../vendor/autoload.php';
 use DigitalpayeSdkPhp\Services\Digitalpaye;
 
@@ -78,102 +91,42 @@ $apikey = "live_digitalpaye129923061";
 $apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
 
 $config = new Digitalpaye($apikey, $apisecret);
-//Create Collecte Wave
-$dataCreateCollecteWave = array(
-    "code_country" => "CI",
-    "operator"=> "WAVE_CI",
-    "currency"=> "XOF",
-    "url_success" => "https://digitalpaye.com",
-    "url_error" => "https://digitalpaye.com",
-    "customer_id"=> "0777101308",
-    "amount"=> 310,
-    "name_user"=> "GUEI HELIE",
-    "transaction_id"=> "10180120"
-);
+
+$dataCreateCollecteWave = [
+    "transactionId" => "DIGITAL-303311901120870",
+    "customer" => [
+        "lastName" => "GUEI",
+        "firstName" => "HELIE",
+        "phone" => "0777101308",
+        "email" => "elieguei225@gmail.com",
+        "address" => [
+            "countryCode" => "CI",
+            "city" => "Abidjan",
+            "streetAddress" => "Plateau Cocody"
+        ]
+    ],
+    "payer" => "0546573332",
+    "amount" => "2000",
+    "urlSuccess" => "https://digitalpaye.com",
+    "urlError" => "https://digitalpaye.com",
+    "currency" => "XOF",
+    "operator" => "WAVE_MONEY_CI"
+];
+
 $collecteWave = $config->createPayment($dataCreateCollecteWave);
-if($collecteWave["status"]=="PENDING"){
-   header("Location: " . $collecteWave["data"]["wave_launch_url"]);
-}else{
-    echo($collecteWave["message"]);
+
+if ($collecteWave['data']["status"] == "PENDING") {
+    header("Location: " . $collecteWave["data"]["waveLaunchUrl"]);
+} else {
+    echo $collecteWave["message"];
 }
 ?>
 ```
 
-### Créer une transaction MTN Money
+### Obtenir le statut d'une transaction
 
-```code
-  <?php
-
-require_once __DIR__ . '/../vendor/autoload.php';
-use DigitalpayeSdkPhp\Services\Digitalpaye;
-
-$apikey = "live_digitalpaye129923061";
-$apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
-
-$config = new Digitalpaye($apikey, $apisecret);
-
-//Create Collecte MTN Mobile Money
-$dataCreateCollecteMTN= array(
-    "code_country" => "CI",
-    "operator"=> "MTN_MONEY_CI",
-    "currency"=> "XOF",
-    "customer_id"=> "0546573332",
-    "amount"=> 310,
-    "name_user"=> "GUEI HELIE",
-    "transaction_id"=> "10180120"
-);
-$collecteMTN = $config->createPayment($dataCreateCollecteMTN);
-if($collecteMTN["status"]=="PENDING"){
-    echo("La transaction est en cours de confirmation");
-}else if($collecteMTN["status"]=="FAILED"){
-    echo("La transaction a échouée");
-}else{
-    echo($collecteMTN["message"]);
-}
-?>
-```
-
-
-### Créer une transaction Carte
-
-```code
-  <?php
-
-require_once __DIR__ . '/../vendor/autoload.php';
-use DigitalpayeSdkPhp\Services\Digitalpaye;
-
-$apikey = "live_digitalpaye129923061";
-$apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
-
-$config = new Digitalpaye($apikey, $apisecret);
-
-//Create Collecte Card
-$dataCreateCollecteCard= array(
-    "code_country" => "CI",
-    "currency"=> "XOF",
-    "customer_id"=> "0546573332",
-    "amount"=> 310,
-    "email_user" => "elieguei225@gmial.com",
-    "name_user"=> "GUEI HELIE",
-    "transaction_id"=> "10180120",
-    "redirect_url" => "https://digitalpaye.com"
-);
-$collecteCard = $config->createCollecteCard($dataCreateCollecteCard);
-if($collecteCard["status"]=="PENDING"){
-    header("Location: " . $collecteCard["data"]["urlPayment"]);
-}else if($collecteCard["status"]=="FAILED"){
-    echo("La transaction a échouée");
-}else{
-    echo($collecteCard["message"]);
-}
-?>
-```
-
-### Obtenir le status d'une transaction
-
-```code
- <?php
-
+```php
+<?php
 require_once __DIR__ . '/../vendor/autoload.php';
 use DigitalpayeSdkPhp\Services\Digitalpaye;
 
@@ -182,43 +135,23 @@ $apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
 
 $transactionId = "f511e4f4-d932-4fcd-a804-51539700d60c";
 $config = new Digitalpaye($apikey, $apisecret);
-//Get Status transaction
+
 $getStatusTransaction = $config->getStatus($transactionId);
-if($getStatusTransaction["code_status"]==202){
-    echo("La transaction est en cours de validation");
-}else if($getStatusTransaction["code_status"]==200){
-    echo("La transaction a été validé");
-}else{
-    echo($getStatusTransaction["message"]);
+
+if ($getStatusTransaction["data"]["status"] == "PENDING") {
+    echo "La transaction est en cours de validation";
+} elseif ($getStatusTransaction["data"]["status"] == "SUCCESSFUL") {
+    echo "La transaction a été validée";
+} else {
+    echo $getStatusTransaction["message"];
 }
-?>
-```
-
-### Obtenir toutes les transactions
-
-```code
-<?php
-
-require_once __DIR__ . '/../vendor/autoload.php';
-use DigitalpayeSdkPhp\Services\Digitalpaye;
-
-$apikey = "live_digitalpaye129923061";
-$apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
-
-$config = new Digitalpaye($apikey, $apisecret);
-//Get all transactions
-$transactions = $config->getAllTransactions();
-//Convertir en Json
-$jsonTransactions = json_encode($transactions);
-echo($jsonTransactions);
 ?>
 ```
 
 ### Faire un transfert d'argent
 
-```code
+```php
 <?php
-
 require_once __DIR__ . '/../vendor/autoload.php';
 use DigitalpayeSdkPhp\Services\Digitalpaye;
 
@@ -227,25 +160,32 @@ $apisecret = "d511e1f4-d932-32fcd-a804-371539700d60c";
 
 $config = new Digitalpaye($apikey, $apisecret);
 
-///Create Transfert
+$dataCreateTransfer = [
+    "transactionId" => "DIGITAL-0139601181902",
+    "customer" => [
+        "lastName" => "GUEI",
+        "firstName" => "HELIE",
+        "phone" => "0777101308",
+        "address" => [
+            "countryCode" => "CI",
+            "city" => "Abidjan",
+            "streetAddress" => "Yopougon, Carrefour Canal"
+        ]
+    ],
+    "recipient" => "0777101308",
+    "amount" => "100",
+    "currency" => "XOF",
+    "operator" => "WAVE_MONEY_CI"
+];
 
-$dataCreateTransfer = array(
-    "code_country" => "CI",
-    "currency"=> "XOF",
-    "customer_id"=> "0777101308",
-    "amount"=> 310,
-    "name"=> "GUEI HELIE",
-    "operator"=> "WAVE_CI",
-    "transaction_id"=> "10180120"
-);
 $transfer = $config->createTransfert($dataCreateTransfer);
-if($transfer["code_status"]=="SUCESSFUL"){
-    echo("Le transfert a été validé");
-}else if($transfer["code_status"]=="PENDING"){
-    echo("Le transfert est en cours");
-}else{
-    echo("Le transfert a echoué");
-}
 
+if ($transfer['data']["status"] == "SUCCESSFUL") {
+    echo "Le transfert a été validé";
+} elseif ($transfer['data']["status"] == "PENDING") {
+    echo "Le transfert est en cours";
+} else {
+    echo "Le transfert a échoué";
+}
 ?>
 ```
